@@ -21,13 +21,25 @@
     <!-- 방법2(버튼) 시작 -->
     <input type="hidden" value="{{jusoUrl}}" id="juso-url" />
     <button onclick="jusoPopup()">주소찾기</button><br />
-    <input type="text" value="" />
+    <input type="text" value="" id="roadFullAddr" />
 
     <script>
         function jusoPopup() {
             let jusoUrl = $("#juso-url").val();
             window.open(jusoUrl, "pop", "width=570, height=420");
+            // window.close();
         }
+
+        async function jusoCheck() {
+            let response = await fetch("/juso/check");
+            let responseParse = await response.text(); // json이 아니니까 .text()
+            console.log(responseParse)
+            $("#roadFullAddr").val(responseParse); // 이건 Polling 방식 - 부하가 심하다
+        }
+
+        setInterval(jusoCheck, 1000); // 지속적으로 실행할 때; 1초에 한 번씩 jusoCheck 실행하라
+
+        jusoCheck();
     </script>
     <!-- 방법2(버튼) 끝 -->
 </body>
